@@ -67,6 +67,9 @@ android {
 repositories {
   mavenCentral()
   google()
+  flatDir {
+    dirs 'libs'
+  }
 }
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
@@ -74,4 +77,5 @@ def kotlin_version = getExtOrDefault("kotlinVersion")
 dependencies {
   implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation(name: 'neptunelite', ext: 'aar')
 }

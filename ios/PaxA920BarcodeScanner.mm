@@ -3,7 +3,7 @@
 @implementation PaxA920BarcodeScanner
 RCT_EXPORT_MODULE()
 
-- (void)initScanner {
+- (void)initScanner:(NSString * _Nullable)action {
 }
 
 - (void)finalizeScanner {
