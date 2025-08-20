@@ -3,10 +3,10 @@
 @implementation PaxA920BarcodeScanner
 RCT_EXPORT_MODULE()
 
-- (NSNumber *)multiply:(double)a b:(double)b {
-    NSNumber *result = @(a * b);
+- (void)initScanner {
+}
 
-    return result;
+- (void)finalizeScanner {
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:

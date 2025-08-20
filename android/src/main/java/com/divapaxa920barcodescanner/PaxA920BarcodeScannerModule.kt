@@ -11,10 +11,12 @@ class PaxA920BarcodeScannerModule(reactContext: ReactApplicationContext) :
     return NAME
   }
 
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
-  override fun multiply(a: Double, b: Double): Double {
-    return a * b
+  override fun initScanner() {
+    // TODO: Initialize scanner resources
+  }
+
+  override fun finalizeScanner() {
+    // TODO: Release scanner resources
   }
 
   companion object {
