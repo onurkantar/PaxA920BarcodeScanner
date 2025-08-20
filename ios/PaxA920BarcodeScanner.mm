@@ -9,6 +9,13 @@ RCT_EXPORT_MODULE()
 - (void)finalizeScanner {
 }
 
+// Required for NativeEventEmitter
+- (void)addListener:(NSString *)eventType {
+}
+
+- (void)removeListeners:(double)count {
+}
+
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
