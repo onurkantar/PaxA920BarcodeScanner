@@ -1,5 +1,5 @@
 import PaxA920BarcodeScanner from './NativePaxA920BarcodeScanner';
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter } from 'react-native';
 import type { EmitterSubscription } from 'react-native';
 
 export function initialize(action?: string): void {
@@ -24,9 +24,8 @@ export function finalize(): void {
 export const BARCODE_READ_SUCCESS = 'barcodeReadSuccess';
 export const BARCODE_READ_FAIL = 'barcodeReadFail';
 
-const nativeEmitter = new NativeEventEmitter(
-  NativeModules.PaxA920BarcodeScanner
-);
+// Pass the TurboModule instance so addListener/removeListeners are called on native
+const nativeEmitter = new NativeEventEmitter(PaxA920BarcodeScanner as any);
 
 export function addBarcodeSuccessListener(
   handler: (event: { data?: string | null }) => void

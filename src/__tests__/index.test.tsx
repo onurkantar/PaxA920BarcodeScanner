@@ -89,8 +89,10 @@ describe('PaxA920BarcodeScanner JS API', () => {
   });
 
   test('success listener receives emitted payload', () => {
-    const received: Array<any> = [];
-    addBarcodeSuccessListener((event) => received.push(event));
+    const received: Array<{ data?: string | null }> = [];
+    addBarcodeSuccessListener((event: { data?: string | null }) =>
+      received.push(event)
+    );
     RN.NativeEventEmitter.__emit('barcodeReadSuccess', { data: '12345' });
     expect(received).toEqual([{ data: '12345' }]);
     expect(
@@ -99,8 +101,10 @@ describe('PaxA920BarcodeScanner JS API', () => {
   });
 
   test('fail listener receives emitted error', () => {
-    const received: Array<any> = [];
-    addBarcodeFailListener((event) => received.push(event));
+    const received: Array<{ error?: string | null }> = [];
+    addBarcodeFailListener((event: { error?: string | null }) =>
+      received.push(event)
+    );
     RN.NativeEventEmitter.__emit('barcodeReadFail', { error: 'Oops' });
     expect(received).toEqual([{ error: 'Oops' }]);
     expect(
