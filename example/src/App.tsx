@@ -1,4 +1,13 @@
-import { Text, View, StyleSheet, Button, TextInput } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  TextInput,
+  DeviceEventEmitter,
+  NativeEventEmitter,
+  NativeModules,
+} from 'react-native';
 import { useEffect, useState } from 'react';
 import {
   initialize,
@@ -13,19 +22,48 @@ export default function App() {
   const [manualEntry, setManualEntry] = useState<string>('');
 
   useEffect(() => {
-    console.log('[Example] Setting up listeners');
+    console.log('[Example] === Setting up listeners ===');
+
+    // Direct DeviceEventEmitter test
+    console.log('[Example] Setting up direct DeviceEventEmitter listener');
+    const directSub = DeviceEventEmitter.addListener(
+      'barcodeReadSuccess',
+      (event) => {
+        console.log('[Example] 🔥 DIRECT DeviceEventEmitter success:', event);
+        setLastBarcode(event?.data ?? JSON.stringify(event));
+        setStatus('Direct event received!');
+      }
+    );
+
+    // Direct NativeEventEmitter test
+    console.log('[Example] Setting up direct NativeEventEmitter listener');
+    const nativeEmitter = new NativeEventEmitter(
+      NativeModules.PaxA920BarcodeScanner
+    );
+    const nativeSub = nativeEmitter.addListener(
+      'barcodeReadSuccess',
+      (event) => {
+        console.log('[Example] 🚀 DIRECT NativeEventEmitter success:', event);
+        setLastBarcode(event?.data ?? JSON.stringify(event));
+        setStatus('Native event received!');
+      }
+    );
+
+    // Library listeners
     const s = addBarcodeSuccessListener(({ data: payload }) => {
-      console.log('[Example] barcodeReadSuccess payload:', payload);
+      console.log('[Example] ✅ LIBRARY barcodeReadSuccess payload:', payload);
       setLastBarcode(payload ?? '');
-      setStatus('Barcode received');
+      setStatus('Library event received!');
     });
     const f = addBarcodeFailListener(({ error: message }) => {
-      console.log('[Example] barcodeReadFail error:', message);
+      console.log('[Example] ❌ barcodeReadFail error:', message);
       setStatus(`Error: ${message ?? 'unknown'}`);
     });
 
     return () => {
       console.log('[Example] Cleaning up listeners and finalizing');
+      directSub.remove();
+      nativeSub.remove();
       s.remove();
       f.remove();
       finalize();
@@ -33,14 +71,16 @@ export default function App() {
   }, []);
 
   const onInitPress = () => {
-    console.log('[Example] Initialize pressed — calling initialize()');
+    console.log('[Example] === Initialize pressed ===');
     try {
+      console.log('[Example] Calling initialize()...');
       initialize();
-      console.log('[Example] initialize() returned');
+      console.log('[Example] ✅ initialize() returned successfully');
+      setStatus('Scanner initialized (listening)');
     } catch (e) {
-      console.log('[Example] initialize() threw', e);
+      console.log('[Example] ❌ initialize() threw error:', e);
+      setStatus('Failed to initialize scanner');
     }
-    setStatus('Scanner initialized (listening)');
   };
 
   const onManualFocus = () => {

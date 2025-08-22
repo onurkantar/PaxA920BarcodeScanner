@@ -30,6 +30,22 @@ jest.mock('react-native', () => {
     }
   }
 
+  const DeviceEventEmitter = {
+    addListener: (eventName: string, handler: (payload: any) => void) => {
+      handlers[eventName] = handlers[eventName] || [];
+      handlers[eventName].push(handler);
+      return { remove: () => void 0 } as any;
+    },
+    __emit: (eventName: string, payload: any) => {
+      (handlers[eventName] || []).forEach((h) => h(payload));
+    },
+  };
+
+  const Platform = {
+    OS: 'android',
+    select: (obj: any) => obj.android ?? obj.default,
+  };
+
   const TurboModuleRegistry = {
     getEnforcing: <T,>(name: string): T => {
       if (name !== 'PaxA920BarcodeScanner') {
@@ -42,6 +58,8 @@ jest.mock('react-native', () => {
   return {
     NativeModules: { PaxA920BarcodeScanner },
     NativeEventEmitter,
+    DeviceEventEmitter,
+    Platform,
     TurboModuleRegistry,
   };
 });
@@ -93,11 +111,8 @@ describe('PaxA920BarcodeScanner JS API', () => {
     addBarcodeSuccessListener((event: { data?: string | null }) =>
       received.push(event)
     );
-    RN.NativeEventEmitter.__emit('barcodeReadSuccess', { data: '12345' });
+    RN.DeviceEventEmitter.__emit('barcodeReadSuccess', { data: '12345' });
     expect(received).toEqual([{ data: '12345' }]);
-    expect(
-      RN.NativeModules.PaxA920BarcodeScanner.addListener
-    ).toHaveBeenCalledWith('barcodeReadSuccess');
   });
 
   test('fail listener receives emitted error', () => {
@@ -105,10 +120,7 @@ describe('PaxA920BarcodeScanner JS API', () => {
     addBarcodeFailListener((event: { error?: string | null }) =>
       received.push(event)
     );
-    RN.NativeEventEmitter.__emit('barcodeReadFail', { error: 'Oops' });
+    RN.DeviceEventEmitter.__emit('barcodeReadFail', { error: 'Oops' });
     expect(received).toEqual([{ error: 'Oops' }]);
-    expect(
-      RN.NativeModules.PaxA920BarcodeScanner.addListener
-    ).toHaveBeenCalledWith('barcodeReadFail');
   });
 });
