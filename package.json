@@ -1,6 +1,6 @@
 {
-  "name": "diva.pax-a920-barcode-scanner",
-  "version": "0.1.0",
+  "name": "@diva-mobilepackages/diva.pax-a920-barcode-scanner",
+  "version": "1.0.0",
   "description": "-",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -56,7 +56,7 @@
   },
   "homepage": "https://github.com/onurkantar/diva.pax-a920-barcode-scanner#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://sonarnexus.logo.com.tr:8443/repository/diva-mobilepackage/"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.6.0",
